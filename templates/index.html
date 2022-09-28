@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Wallet NFTs Viewer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="column">
+                <h1>Solana Wallet NFT Viewer</h1>
+                <p>
+                    <form id="query-wallet" method="get" action="/wallet">
+                        <div class="ui huge fluid icon input">
+                            <input type="text" name="account" placeholder="Wallet address" />
+                            <i class="inverted circular search link icon" id="submit"></i>
+                        </div>
+                    </form>
+                </p>  
+            </div>    
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript">
+        $(() => {
+            $("#submit").click(function () {
+                if ($("input").val().length < 1) {
+                    console.log("empty")
+                } else {
+                    $("#query-wallet").submit()
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+[config]
+skip_core_tasks = true
+min_version = "0.36.1"
+
+[env]
+PROJECT_VERSION = "${CARGO_MAKE_CRATE_VERSION}"
+PROJECT_NAME = "${CARGO_MAKE_CRATE_NAME}"
+REGISTRY = "registry.gitlab.com/osslocal/solana-e"
+
+[tasks.pack]
+script = '''
+buildah build \
+    -f ./Containerfile \
+    --build-arg RUSTC_VERSION="${CARGO_MAKE_RUST_VERSION}" \
+    --build-arg service_version="${PROJECT_VERSION}" \
+    --build-arg service_name="${PROJECT_NAME}" \
+    --build-arg service_description="${CARGO_MAKE_CRATE_DESCRIPTION}" \
+    --build-arg service_documentation="${CARGO_MAKE_CRATE_DOCUMENTATION}" \
+    --build-arg service_homepage="${CARGO_MAKE_CRATE_HOMEPAGE}" \
+    --build-arg service_repository="${CARGO_MAKE_CRATE_REPOSITORY}" \
+    --build-arg service_license="${CARGO_MAKE_CRATE_LICENSE}" \
+    --build-arg service_build_date="$(date --iso-8601=seconds -u)" \
+    --build-arg service_vcs_ref="$(git rev-parse --short HEAD)" \
+    -t ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION} \
+    -t ${REGISTRY}/${PROJECT_NAME}:latest .
+'''
+
+[tasks.push]
+script = '''
+buildah image push -a ${REGISTRY}/${PROJECT_NAME}
+'''
+
+[tasks.clean]
+script = '''
+docker system prune --volumes -f
+docker image prune -a --filter="until=1h" --filter "label=org.opencontainers.image.title=${PROJECT_NAME}" -f
+'''
+
+[tasks.load]
+script = '''
+ssh -T sandbox << EOF
+docker pull ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
+docker images
+EOF
+'''
+
+[tasks.run]
+script = '''
+ssh -T sandbox << EOF
+docker stop ${PROJECT_NAME}_server && docker rm ${PROJECT_NAME}_server
+docker run -d --name ${PROJECT_NAME}_server \
+    -p 8081:8081/tcp \
+    -e PORT=8011 \
+    --restart unless-stopped \
+    ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
+EOF
+'''
+
+[tasks.deploy]
+dependencies = [ "pack", "push", "clean" ]

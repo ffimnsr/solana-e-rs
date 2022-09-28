@@ -1,0 +1,10 @@
+{
+    "rust-analyzer.checkOnSave.allTargets": false,
+    "rust-analyzer.assist.importGranularity": "module",
+    "rust-analyzer.callInfo.full": true,
+    "rust-analyzer.checkOnSave.extraArgs": [
+        "-p solana-e"
+    ],
+    "rust-analyzer.assist.importEnforceGranularity": true,
+    "rust-analyzer.cargo.allFeatures": true
+}

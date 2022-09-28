@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Wallet NFTs Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+        integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style text="text/css">
+        .e-head {
+            height: 8rem;
+        }
+
+        .e-content {
+            margin: 1rem 2rem !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui center aligned grid e-head">
+        <div class="twelve wide column">
+            <p>
+            <form id="query-wallet" method="get" action="/wallet">
+                <div class="ui huge fluid icon input">
+                    <input type="text" name="account" placeholder="Wallet address" />
+                    <i class="inverted circular search link icon" id="submit"></i>
+                </div>
+            </form>
+            </p>
+        </div>
+    </div>
+
+    <div class="ui stackable grid e-content">
+        {% for token in tokens %}
+        <div class="three wide column e-token" data-metadata="{{token.uri}}">
+            <div class="ui card">
+                <div class="image">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAAEiCAYAAABdvt+2AAADTElEQVR42u3UMQEAAAgDID2MtP7RNIYPhKCT2QJ41CICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICvh15Z5/OFsZUzQAAAABJRU5ErkJggg=="
+                        width="290" height="290">
+                </div>
+                <div class="content">
+                    <a class="header" href="https://solscan.io/token/{{token.mint}}">{{token.name}}</a>
+                    <div class="meta">
+                        <span class="date">{{token.symbol}}</span>
+                    </div>
+                    <div class="description"></div>
+                </div>
+                <div class="extra content">
+                    <a href="https://moonrank.app/{{token.mint}}">
+                        <i class="chart bar icon"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"
+        integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript">
+        $(() => {
+            $("#submit").click(function () {
+                if ($("input").val().length > 0) {
+                    $("#query-wallet").submit()
+                }
+            })
+
+            $("img").on("error", () => {
+                $(this).attr("src", 
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASIAAAEiCAYAAABdvt+2AAADTElEQVR42u3UMQEAAAgDID2MtP7RNIYPhKCT2QJ41CICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICRASISESAiAARiQgQESAiEQEiAkQkIkBEgIhEBIgIEJGIABEBIhIRICJARCICvh15Z5/OFsZUzQAAAABJRU5ErkJggg==")
+            })
+
+            $(".e-token").each((i, obj) => {
+                const metadata = obj.attributes.getNamedItem("data-metadata").textContent
+                const image = obj.getElementsByTagName("img").item(0)
+                const description = obj.getElementsByClassName("description").item(0)
+                obj.setAttribute("key", (i + 1).toString())
+
+                fetch(`/load_metadata?data=${metadata}`)
+                    .then((resp) => resp.json())
+                    .then((json) => {
+                        image.src = json.image
+                        description.textContent = json.description.substring(0, 197).trimEnd() + "..."
+                    })
+                    .catch((err) => console.log(err));
+            })
+        })
+    </script>
+</body>
+
+</html>
