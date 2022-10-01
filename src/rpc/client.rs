@@ -17,6 +17,9 @@ pub struct SolanaClient(RpcClient);
 ///
 /// # Hyperspace - origin: https://hyperspace.xyz
 /// https://hyperspace.rpcpool.com/
+///
+/// # SolanaFM - origin: https://solana.fm
+/// https://qn.solana.fm/
 impl SolanaClient {
     pub fn new<U: ToString>(url: U) -> Self {
         let timeout = Duration::from_secs(45);

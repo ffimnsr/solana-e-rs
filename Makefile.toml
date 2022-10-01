@@ -9,7 +9,7 @@ REGISTRY = "registry.gitlab.com/osslocal/solana-e"
 
 [tasks.pack]
 script = '''
-buildah build \
+buildah build --layers=true \
     -f ./Containerfile \
     --build-arg RUSTC_VERSION="${CARGO_MAKE_RUST_VERSION}" \
     --build-arg service_version="${PROJECT_VERSION}" \
@@ -27,34 +27,39 @@ buildah build \
 
 [tasks.push]
 script = '''
-buildah image push -a ${REGISTRY}/${PROJECT_NAME}
+buildah push --all ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION} ${REGISTRY}/${PROJECT_NAME}:latest
 '''
 
 [tasks.clean]
 script = '''
-docker system prune --volumes -f
-docker image prune -a --filter="until=1h" --filter "label=org.opencontainers.image.title=${PROJECT_NAME}" -f
+podman system prune --volumes -f
+podman image prune -a --filter="until=1h" --filter "label=org.opencontainers.image.title=${PROJECT_NAME}" -f
 '''
 
 [tasks.load]
 script = '''
 ssh -T sandbox << EOF
-docker pull ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
-docker images
+podman pull ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
+podman images
 EOF
 '''
 
 [tasks.run]
 script = '''
-ssh -T sandbox << EOF
-docker stop ${PROJECT_NAME}_server && docker rm ${PROJECT_NAME}_server
-docker run -d --name ${PROJECT_NAME}_server \
+podman run --rm -it --name ${PROJECT_NAME}_server \
     -p 8081:8081/tcp \
-    -e PORT=8011 \
-    --restart unless-stopped \
+    ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
+'''
+
+[tasks.run-remote]
+script = '''
+ssh -T sandbox << EOF
+podman stop ${PROJECT_NAME}_server && docker rm ${PROJECT_NAME}_server
+podman run -d --name ${PROJECT_NAME}_server \
+    -p 8081:8081/tcp \
     ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
 EOF
 '''
 
-[tasks.deploy]
-dependencies = [ "pack", "push", "clean" ]
+[tasks.pp]
+dependencies = [ "pack", "push" ]

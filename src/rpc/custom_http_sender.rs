@@ -144,9 +144,9 @@ impl RpcSender for CustomHttpSender {
 
                     too_many_requests_retries -= 1;
                     log::debug!(
-                                "Too many requests: server responded with {:?}, {} retries left, pausing for {:?}",
-                                response, too_many_requests_retries, duration
-                            );
+                        "Too many requests: server responded with {:?}, {} retries left, pausing for {:?}",
+                        response, too_many_requests_retries, duration
+                    );
 
                     sleep(duration).await;
                     stats_updater.add_rate_limited_time(duration);

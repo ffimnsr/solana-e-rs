@@ -87,12 +87,10 @@ async fn wallet(
 
     let url = "https://solitary-white-violet.solana-mainnet.quiknode.pro/";
     let crawler = SolanaCrawler::new(url);
-    let tokens = crawler
-        .get_nfts_for_owner(account)
-        .await
-        .map_err(|_| error::ErrorInternalServerError("Failed to fetch nfts for owner"))?;
+    let tokens = crawler.get_nfts_for_owner(account).await.unwrap_or(vec![]);
 
     let mut ctx = tera::Context::new();
+    ctx.insert("tokens_len", &tokens.len());
     ctx.insert("tokens", &tokens);
     let body = tmpl
         .render("wallet.html", &ctx)
@@ -117,8 +115,11 @@ async fn main() -> std::io::Result<()> {
 
     log::info!("Listening on 0.0.0.0:8081!");
 
+    let template_path = concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*");
+    log::info!("Loading template from path {}", template_path);
+
     HttpServer::new(|| {
-        let tera = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*")).unwrap();
+        let tera = Tera::new(template_path).unwrap();
 
         App::new()
             .app_data(web::Data::new(tera))
