@@ -1,6 +1,6 @@
 [config]
 skip_core_tasks = true
-min_version = "0.36.1"
+min_version = "0.36.13"
 
 [env]
 PROJECT_VERSION = "${CARGO_MAKE_CRATE_VERSION}"
@@ -9,7 +9,7 @@ REGISTRY = "registry.gitlab.com/osslocal/solana-e"
 
 [tasks.pack]
 script = '''
-buildah build --layers=true \
+docker build \
     -f ./Containerfile \
     --build-arg RUSTC_VERSION="${CARGO_MAKE_RUST_VERSION}" \
     --build-arg service_version="${PROJECT_VERSION}" \
@@ -27,26 +27,26 @@ buildah build --layers=true \
 
 [tasks.push]
 script = '''
-buildah push --all ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION} ${REGISTRY}/${PROJECT_NAME}:latest
+docker push --all ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION} ${REGISTRY}/${PROJECT_NAME}:latest
 '''
 
 [tasks.clean]
 script = '''
-podman system prune --volumes -f
-podman image prune -a --filter="until=1h" --filter "label=org.opencontainers.image.title=${PROJECT_NAME}" -f
+docker system prune --volumes -f
+docker image prune -a --filter="until=1h" --filter "label=org.opencontainers.image.title=${PROJECT_NAME}" -f
 '''
 
 [tasks.load]
 script = '''
 ssh -T sandbox << EOF
-podman pull ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
-podman images
+docker pull ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
+docker images
 EOF
 '''
 
 [tasks.run]
 script = '''
-podman run --rm -it --name ${PROJECT_NAME}_server \
+docker run --rm -it --name ${PROJECT_NAME}_server \
     -p 8081:8081/tcp \
     ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
 '''
@@ -54,8 +54,8 @@ podman run --rm -it --name ${PROJECT_NAME}_server \
 [tasks.run-remote]
 script = '''
 ssh -T sandbox << EOF
-podman stop ${PROJECT_NAME}_server && docker rm ${PROJECT_NAME}_server
-podman run -d --name ${PROJECT_NAME}_server \
+docker stop ${PROJECT_NAME}_server && docker rm ${PROJECT_NAME}_server
+docker run -d --name ${PROJECT_NAME}_server \
     -p 8081:8081/tcp \
     ${REGISTRY}/${PROJECT_NAME}:${PROJECT_VERSION}
 EOF

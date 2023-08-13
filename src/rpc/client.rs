@@ -20,6 +20,10 @@ pub struct SolanaClient(RpcClient);
 ///
 /// # SolanaFM - origin: https://solana.fm
 /// https://qn.solana.fm/
+/// 
+/// # Cryptostarps - origin: https://cryptostraps.tools
+/// https://alice.genesysgo.net/
+/// https://pentacle.genesysgo.net/
 impl SolanaClient {
     pub fn new<U: ToString>(url: U) -> Self {
         let timeout = Duration::from_secs(45);

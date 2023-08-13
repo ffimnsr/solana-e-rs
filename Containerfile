@@ -3,7 +3,7 @@
 ##
 ## STEP 1 - BUILD
 ##
-FROM rust:1.64.0 AS base
+FROM rust:1.71.1 AS base
 
 # specify build working directory
 WORKDIR /code
